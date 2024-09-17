@@ -8,18 +8,19 @@ output_folder = "outputs"
 output_filename = "output.mp3"
 #init
 allVoices = []
-voiceChoices = ["Microsoft Gadis Online (Natural) - Indonesian (Indonesia)"]
+voiceChoices = []
 async def init():
+    def simplify(name):
+        simplename = name.split(" - ")
+        return simplename[1] + " - " + simplename[0].split(" ")[1]
     for v in (await (edge_tts.list_voices())):
-        allVoices.append({"label":v["FriendlyName"],"value":v["ShortName"],"locale":v["Locale"],"gender":v["Gender"]})
+        allVoices.append({"label":simplify(v["FriendlyName"]),"value":v["ShortName"],"locale":v["Locale"],"gender":v["Gender"]})
     for voice in allVoices:
         voiceChoices.append(voice["label"])
+    voiceChoices.sort()
 
 def getVoiceInfo(voices):
-    return "id-ID-GadisNeural"
-    #find voice in allVoices list
-    #print(next((i for i, x in enumerate(allVoices) if [x==voices]), ["id-ID-GadisNeural"]))
-    #return voices
+    return next((x["value"] for x in allVoices if x["label"] == voices), "id-ID-GadisNeural")
 
 async def textToSpeech(text, voices, rate, volume):
     voices = getVoiceInfo(voices)
@@ -49,42 +50,43 @@ def clearSpeech():
         os.remove(output_file)
     return None, None
 
-with gr.Blocks(title="Simple Edge-TTS") as demo:
-    gr.Markdown("""# Simple Text to Speech using Edge-TTS library""")
-    with gr.Row():
-        with gr.Column():
-            text = gr.TextArea(label="Text Here", elem_classes="text-area")
-            btn = gr.Button("Generate", elem_id="submit-btn")
-        with gr.Column():
-            voices = gr.Dropdown(choices=voiceChoices,
-                                value="Microsoft Gadis Online (Natural) - Indonesian (Indonesia)",
-                                label="Speakers",
-                                info="Select speaker",
+async def ui():
+    with gr.Blocks(title="Simple Edge-TTS") as webui:
+        gr.Markdown("""# Simple Text to Speech using Edge-TTS library""")
+        with gr.Row():
+            with gr.Column():
+                text = gr.TextArea(label="Text Here", info="The text that will be spoken" , elem_classes="text-area")
+                btn = gr.Button("Generate", elem_id="submit-btn")
+            with gr.Column():
+                voices = gr.Dropdown(choices=voiceChoices,
+                                    value="Indonesian (Indonesia) - Gadis",
+                                    label="Speakers",
+                                    info="Select language / speaker",
+                                    interactive=True)
+                rate = gr.Slider(-100,
+                                100,
+                                step=1,
+                                value=0,
+                                label="Speech Speed",
+                                info="Speek faster or slower",
                                 interactive=True)
-            rate = gr.Slider(-100,
-                            100,
-                            step=1,
-                            value=0,
-                            label="Speech Speed",
-                            info="Speek faster or slower",
-                            interactive=True)
-            volume = gr.Slider(-100,
-                            100,
-                            step=1,
-                            value=0,
-                            label="Pitch",
-                            info="Increase or decrease pitch",
-                            interactive=True)
-            audio = gr.Audio(label="Output",
-                            interactive=False,
-                            elem_classes="audio")
-            clear = gr.Button("Clear", elem_id="clear-btn")
-            btn.click(fn=textToSpeech,
-                    inputs=[text, voices, rate, volume],
-                    outputs=[audio])
-            clear.click(fn=clearSpeech, outputs=[text, audio])
-
-asyncio.run(init())
+                volume = gr.Slider(-100,
+                                100,
+                                step=1,
+                                value=0,
+                                label="Pitch",
+                                info="Increase or decrease pitch",
+                                interactive=True)
+                audio = gr.Audio(label="Output",
+                                interactive=False,
+                                elem_classes="audio")
+                clear = gr.Button("Clear", elem_id="clear-btn")
+                btn.click(fn=textToSpeech,
+                        inputs=[text, voices, rate, volume],
+                        outputs=[audio])
+                clear.click(fn=clearSpeech, outputs=[text, audio])
+    webui.launch()
 
 if __name__ == "__main__":
-    demo.launch()
+    asyncio.run(init())
+    asyncio.run(ui())
