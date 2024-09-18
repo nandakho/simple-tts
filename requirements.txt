@@ -1,2 +1,3 @@
 edge-tts==6.1.12
 gradio==4.43.0
+rvc-python==0.1.4

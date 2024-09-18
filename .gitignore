@@ -1,3 +1,5 @@
 __pycache__
 outputs/*
+rvc_models/*
+!rvc_models/put_rvc_models_here.txt
 venv
