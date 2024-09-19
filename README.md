@@ -40,7 +40,8 @@ rvc_models/
 ```
 
 ## Other Notes
-- If you are using ARM Linux (aarch64) and can't install rvc-python, 
-  most likely because [praat-parselmouth](https://github.com/YannickJadoul/Parselmouth) doesn't have prebuild for aarch64 and failed to build on pip install. 
-  Solution: You have to clone praat-parselmouth repo and it's submodules (`git clone --recurse-submodules https://github.com/YannickJadoul/Parselmouth`),  
+- If you are using ARM Linux (aarch64) and can't install rvc-python,  
+  most likely because [praat-parselmouth](https://github.com/YannickJadoul/Parselmouth) doesn't have prebuild for aarch64 and failed to build on pip install.  
+  Solution: You have to clone praat-parselmouth repo and it's submodules  
+  (`git clone --recurse-submodules https://github.com/YannickJadoul/Parselmouth`),  
   then run `pip install` there (in the cloned parselmouth directory).

@@ -30,9 +30,6 @@ async def init():
 def getVoiceInfo(voices):
     return next((x["value"] for x in allVoices if x["label"] == voices), allVoices[0]["value"])
 
-def clearAll():
-    return None,None,None
-
 async def textToSpeech(text, voices, rate, volume):
     voices = getVoiceInfo(voices)
     if (rate >= 0):
