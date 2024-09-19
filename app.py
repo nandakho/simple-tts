@@ -121,7 +121,7 @@ async def ui():
                                 label="Voice",
                                 info="Select RVC voice")
                     old_ver = gr.Checkbox(value=False,
-                                label="Ver 1",
+                                label="Model is v1",
                                 info="Check this if model is v1")
                     rvc_pitch = gr.Slider(-24,
                                 24,
