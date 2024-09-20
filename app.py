@@ -27,6 +27,13 @@ async def init():
         voiceChoices.append(voice["label"])
     voiceChoices.sort()
 
+def updateRVCModels():
+    rvci.models = rvci._load_available_models()
+    models = rvci.list_models()
+    models.sort()
+    return gr.Dropdown(choices=models)
+
+
 def getVoiceInfo(voices):
     return next((x["value"] for x in allVoices if x["label"] == voices), allVoices[0]["value"])
 
@@ -126,6 +133,9 @@ async def ui():
                                 value=0,
                                 label="Pitch",
                                 info="Change pitch from input (+higher, -lower)")
+                    rvc_refresh = gr.Button("Refresh Models")
+                    rvc_refresh.click(fn=updateRVCModels,
+                                    outputs=rvc_voice)
                     audio_convert = gr.Audio(label="RVC Converted",
                                 type="filepath",
                                 interactive=False)
